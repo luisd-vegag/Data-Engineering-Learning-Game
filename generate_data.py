@@ -1,11 +1,39 @@
 import csv
+from typing import List
 from faker import Faker
 import random
+import os
 
 
-def generate_users_data(num_rows: int = 100) -> None:
+def generate_csv_files(path: str = 'system/data/', num_rows: int = 100) -> List:
+    files = list()
+    files.append(generate_users_data(path, num_rows))
+    files.append(generate_sales_data(path, num_rows))
+    files.append(generate_product_date(path, num_rows))
+    files.append(generate_customer_data(path, num_rows))
+    return files
+
+
+def delete_files(files: list) -> None:
+    for file in files:
+        try:
+            os.remove(file)
+            # print(f"File {file} deleted successfully.")
+        except OSError as e:
+            print(f"Error deleting file {file}: {e}")
+
+
+def generate_users_data(path: str = '', num_rows: int = 100) -> str:
     # Set the filename and number of rows
-    filename = "system/users.csv"
+    filename = path + "users.csv"
+
+    # Delete the file if it already exists
+    if os.path.exists(filename):
+        os.remove(filename)
+        # print(f"File {filename} deleted successfully.")
+
+    # Create the directory if it does not exist
+    os.makedirs(os.path.dirname(filename), exist_ok=True)
 
     # Set the column names
     headers = ["id", "name", "age", "city"]
@@ -24,13 +52,22 @@ def generate_users_data(num_rows: int = 100) -> None:
             ]
             writer.writerow(row)
 
-    print(f"File {filename} created successfully.")
+    # print(f"File {filename} created successfully.")
+    return filename
 
 
-def generate_sales_data(num_rows: int = 100) -> None:
+def generate_sales_data(path: str = '', num_rows: int = 100) -> None:
 
     # Set the filename and number of rows
-    filename = "system/sales.csv"
+    filename = path + "sales.csv"
+
+    # Delete the file if it already exists
+    if os.path.exists(filename):
+        os.remove(filename)
+        # print(f"File {filename} deleted successfully.")
+
+    # Create the directory if it does not exist
+    os.makedirs(os.path.dirname(filename), exist_ok=True)
 
     # Set the column names
     headers = ["order_id", "quantity", "price", "total", "date"]
@@ -57,14 +94,22 @@ def generate_sales_data(num_rows: int = 100) -> None:
             ]
             writer.writerow(row)
 
-    print(f"File {filename} created successfully.")
+    # print(f"File {filename} created successfully.")
+    return filename
 
 
-def generate_product_date():
+def generate_product_date(path: str = '', num_rows: int = 100) -> None:
 
     # Set the filename and number of rows
-    filename = "system/products.csv"
-    num_rows = 100
+    filename = path + "products.csv"
+
+    # Delete the file if it already exists
+    if os.path.exists(filename):
+        os.remove(filename)
+        # print(f"File {filename} deleted successfully.")
+
+    # Create the directory if it does not exist
+    os.makedirs(os.path.dirname(filename), exist_ok=True)
 
     # Set the column names
     headers = ["product_id", "brand", "name", "category", "price"]
@@ -92,14 +137,22 @@ def generate_product_date():
             ]
             writer.writerow(row)
 
-    print(f"File {filename} created successfully.")
+    # print(f"File {filename} created successfully.")
+    return filename
 
 
-def generate_customer_data():
+def generate_customer_data(path: str = '', num_rows: int = 100) -> None:
 
     # Set the filename and number of rows
-    filename = "system/customers.csv"
-    num_rows = 100
+    filename = path + "customers.csv"
+
+    # Delete the file if it already exists
+    if os.path.exists(filename):
+        os.remove(filename)
+        # print(f"File {filename} deleted successfully.")
+
+    # Create the directory if it does not exist
+    os.makedirs(os.path.dirname(filename), exist_ok=True)
 
     # Set the column names
     headers = ["customer_id", "first_name",
@@ -126,4 +179,5 @@ def generate_customer_data():
             ]
             writer.writerow(row)
 
-    print(f"File {filename} created successfully.")
+    # print(f"File {filename} created successfully.")
+    return filename
