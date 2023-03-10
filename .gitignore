@@ -128,9 +128,5 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-<<<<<<< HEAD
 tmp/
-system/data/
-=======
-tmp/
->>>>>>> fecb7bda53a31c4bc6d0d05d08b5500911623d61
+system/
