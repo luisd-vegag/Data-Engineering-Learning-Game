@@ -21,23 +21,29 @@ def show_compute_specs():
 
 
 def measure_function(func, *args):
-    # Get the starting CPU time and resource usage
+    # Get the starting CPU time and usage for each core and total usage
     start_time = time.process_time()
-    start_usage = resource.getrusage(resource.RUSAGE_SELF)
+    start_usage = psutil.cpu_percent(percpu=True)
+    start_total_usage = psutil.cpu_percent()
 
     # Call the function with the provided arguments to measure
     result = func(*args)
 
-    # Get the ending CPU time and resource usage
+    # Get the ending CPU time and usage for each core and total usage
     end_time = time.process_time()
-    end_usage = resource.getrusage(resource.RUSAGE_SELF)
+    end_usage = psutil.cpu_percent(percpu=True)
+    end_total_usage = psutil.cpu_percent()
 
-    # Calculate the CPU time and resource usage
+    # Calculate the CPU time and usage for each core and total usage
     cpu_time = end_time - start_time
-    cpu_usage = end_usage.ru_utime - start_usage.ru_utime
+    cpu_usage = []
+    for i in range(len(start_usage)):
+        usage = end_usage[i] - start_usage[i]
+        cpu_usage.append(round(usage, 4))
+    cpu_total_usage = end_total_usage - start_total_usage
 
     # Return the result and measurements
-    return result, cpu_time, cpu_usage
+    return result, cpu_time, cpu_total_usage, cpu_usage
 
 
 def compare_method(selected_method, processing_results):
@@ -53,32 +59,39 @@ def compare_method(selected_method, processing_results):
     """
     method_dict = {}
     other_methods = []
+    cpu_usage_per_core_per_method = {}
 
     # Find the method to compare and separate it from the other methods
     for method in processing_results:
         if method['method'] == selected_method:
             method_dict = method
+            cpu_usage_per_core_per_method[method['method']
+                                          ] = method['cpu_usage']
         else:
             other_methods.append(method)
 
     # Calculate the CPU time and usage differences for each other method compared to the target method
     cpu_time_diffs = {}
-    cpu_usage_diffs = {}
+    cpu_total_usage_diffs = {}
 
     for method in other_methods:
         cpu_time_diff = method_dict['cpu_time'] - method['cpu_time']
-        cpu_usage_diff = method_dict['cpu_usage'] - method['cpu_usage']
+        cpu_total_usage_diff = method_dict['cpu_total_usage'] - \
+            method['cpu_total_usage']
 
         cpu_time_diffs[method['method']] = cpu_time_diff
-        cpu_usage_diffs[method['method']] = cpu_usage_diff
+        cpu_total_usage_diffs[method['method']] = cpu_total_usage_diff
+        cpu_usage_per_core_per_method[method['method']
+                                      ] = method['cpu_usage']
 
     # Create a dictionary with the comparison results
     comparison_results = {
         'method': selected_method,
         'cpu_time': method_dict['cpu_time'],
-        'cpu_usage': method_dict['cpu_usage'],
+        'cpu_total_usage': method_dict['cpu_total_usage'],
         'cpu_time_diffs': cpu_time_diffs,
-        'cpu_usage_diffs': cpu_usage_diffs
+        'cpu_total_usage_diffs': cpu_total_usage_diffs,
+        'cpu_usage_per_core_per_method': cpu_usage_per_core_per_method
     }
     display_comparison_results(comparison_results)
     return comparison_results
@@ -93,11 +106,11 @@ def display_comparison_results(results):
     """
     print("")
     print(f"Comparison results for {results['method']} method:")
-    print(f"CPU time: {results['cpu_time']}")
-    print(f"CPU usage: {results['cpu_usage']}")
+    print(f"CPU time: {results['cpu_time']:.4f}")
+    print(f"CPU total usage: {results['cpu_total_usage']:.2f}%")
     print("")
-    print("CPU time differences compared to other methods (`+` is better):")
 
+    print("CPU time differences compared to other methods (`+` is less than selected):")
     for method, diff in results['cpu_time_diffs'].items():
         diff_percent = (diff / results['cpu_time']) * 100
         if diff > 0:
@@ -106,11 +119,15 @@ def display_comparison_results(results):
             print(f"{method}: {diff_percent:.2f}%")
 
     print("")
-    print("CPU usage differences compared to other methods (`+` is better):")
+    print("CPU total usage differences compared to other methods (`+` is more than selected):")
 
-    for method, diff in results['cpu_usage_diffs'].items():
-        diff_percent = (diff / results['cpu_usage']) * 100
+    for method, diff in results['cpu_total_usage_diffs'].items():
+        diff_percent = (diff / results['cpu_total_usage']) * 100
         if diff > 0:
             print(f"{method}: +{diff_percent:.2f}%")
         else:
             print(f"{method}: {diff_percent:.2f}%")
+    print("")
+    print(f"Core usage per method:")
+    for method, core_usage in results['cpu_usage_per_core_per_method'].items():
+        print(f"{method.ljust(20)}: {core_usage}")

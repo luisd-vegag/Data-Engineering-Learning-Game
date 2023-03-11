@@ -1,3 +1,4 @@
+import time
 from scenarios.scenarios import scenarios
 from data_processing import data_processing
 from player import Player
@@ -39,19 +40,27 @@ def main():
     selected_method = scenario['methods'][method_index]
 
     # Generate csv files
-    input_files = gd.generate_csv_files(num_rows=100000)
+    # input_files = gd.generate_csv_files(
+    #    path='system/data_10k/', num_rows=10000)
 
-    input_files = ['system/data/users.csv', 'system/data/sales.csv',
-                   'system/data/products.csv', 'system/data/customers.csv']
+    # input_files = ['system/data_10k/users.csv', 'system/data_10k/sales.csv',
+    #               'system/data_10k/products.csv', 'system/data_10k/customers.csv']
+    input_files = ['system/data_100k/users.csv', 'system/data_100k/sales.csv',
+                   'system/data_100k/products.csv', 'system/data_100k/customers.csv']
+    # input_files = ['system/data_1m/users.csv', 'system/data_1m/sales.csv',
+    #                'system/data_1m/products.csv', 'system/data_1m/customers.csv']
+
     processing_results = list()
 
     for method in scenario['methods']:
-        results, cpu_time, cpu_usage = data_processing.run_scenario(
+        time.sleep(2)
+        print(f'Processing {method}')
+        results, cpu_time, cpu_total_usage, cpu_usage = data_processing.run_scenario(
             scenario, input_files, method)
         processing_results.append(
-            {'method': method, 'cpu_time': cpu_time, 'cpu_usage': cpu_usage})
+            {'method': method, 'cpu_time': cpu_time, 'cpu_total_usage': cpu_total_usage, 'cpu_usage': cpu_usage})
 
-    gd.delete_files(input_files)
+    # gd.delete_files(input_files)
 
     methods_comparation = cm.compare_method(
         selected_method, processing_results)

@@ -16,6 +16,7 @@ def read_csv_file(file):
 
 
 def read_csv_files(files):
-    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+    # concurrent.futures.ProcessPoolExecutor
+    with concurrent.futures.ThreadPoolExecutor() as executor:
         results = list(executor.map(read_csv_file, files))
     return results
