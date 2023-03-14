@@ -21,13 +21,17 @@ def show_compute_specs():
 
 
 def measure_function(func, *args):
+    '''
+    # TODO:
+        Review disk usage metric. It seems like is not working properly
+    '''
+
     directory_path = os.path.dirname(args[0][0])
     # Get the starting CPU time and usage for each core and total usage
     start_time = time.process_time()
     start_usage = psutil.cpu_percent(percpu=True)
     start_total_usage = psutil.cpu_percent()
     start_disk_usage = psutil.disk_usage(directory_path).used
-    print(start_disk_usage)
     args = [*args]
 
     # Call the function with the provided arguments to measure
@@ -38,7 +42,6 @@ def measure_function(func, *args):
     end_usage = psutil.cpu_percent(percpu=True)
     end_total_usage = psutil.cpu_percent()
     end_disk_usage = psutil.disk_usage(directory_path).used
-    print(end_disk_usage)
 
     # Calculate the CPU time and usage for each core and total usage
     cpu_time = end_time - start_time
