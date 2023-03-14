@@ -1,4 +1,4 @@
-import resource
+import os
 import time
 import psutil
 
@@ -21,10 +21,14 @@ def show_compute_specs():
 
 
 def measure_function(func, *args):
+    directory_path = os.path.dirname(args[0][0])
     # Get the starting CPU time and usage for each core and total usage
     start_time = time.process_time()
     start_usage = psutil.cpu_percent(percpu=True)
     start_total_usage = psutil.cpu_percent()
+    start_disk_usage = psutil.disk_usage(directory_path).used
+    print(start_disk_usage)
+    args = [*args]
 
     # Call the function with the provided arguments to measure
     result = func(*args)
@@ -33,6 +37,8 @@ def measure_function(func, *args):
     end_time = time.process_time()
     end_usage = psutil.cpu_percent(percpu=True)
     end_total_usage = psutil.cpu_percent()
+    end_disk_usage = psutil.disk_usage(directory_path).used
+    print(end_disk_usage)
 
     # Calculate the CPU time and usage for each core and total usage
     cpu_time = end_time - start_time
@@ -40,10 +46,14 @@ def measure_function(func, *args):
     for i in range(len(start_usage)):
         usage = end_usage[i] - start_usage[i]
         cpu_usage.append(round(usage, 4))
+
     cpu_total_usage = end_total_usage - start_total_usage
 
+    # Calculate the disk usage change
+    disk_usage = end_disk_usage - start_disk_usage
+
     # Return the result and measurements
-    return result, cpu_time, cpu_total_usage, cpu_usage
+    return result, cpu_time, cpu_total_usage, cpu_usage, disk_usage
 
 
 def compare_method(selected_method, processing_results):
@@ -73,14 +83,18 @@ def compare_method(selected_method, processing_results):
     # Calculate the CPU time and usage differences for each other method compared to the target method
     cpu_time_diffs = {}
     cpu_total_usage_diffs = {}
+    disk_usage_diffs = {}
 
     for method in other_methods:
         cpu_time_diff = method_dict['cpu_time'] - method['cpu_time']
         cpu_total_usage_diff = method_dict['cpu_total_usage'] - \
             method['cpu_total_usage']
+        disk_usage_diff = method_dict['disk_usage'] - \
+            method['disk_usage']
 
         cpu_time_diffs[method['method']] = cpu_time_diff
         cpu_total_usage_diffs[method['method']] = cpu_total_usage_diff
+        disk_usage_diffs[method['method']] = disk_usage_diff
         cpu_usage_per_core_per_method[method['method']
                                       ] = method['cpu_usage']
 
@@ -89,8 +103,10 @@ def compare_method(selected_method, processing_results):
         'method': selected_method,
         'cpu_time': method_dict['cpu_time'],
         'cpu_total_usage': method_dict['cpu_total_usage'],
+        'disk_usage': method_dict['disk_usage'],
         'cpu_time_diffs': cpu_time_diffs,
         'cpu_total_usage_diffs': cpu_total_usage_diffs,
+        'disk_usage_diffs': disk_usage_diffs,
         'cpu_usage_per_core_per_method': cpu_usage_per_core_per_method
     }
     display_comparison_results(comparison_results)
@@ -108,6 +124,7 @@ def display_comparison_results(results):
     print(f"Comparison results for {results['method']} method:")
     print(f"CPU time: {results['cpu_time']:.4f}")
     print(f"CPU total usage: {results['cpu_total_usage']:.2f}%")
+    print(f"Disk usage: {results['disk_usage']:.2f}%")
 
     if len(results['cpu_time_diffs']) > 0:
         print("")
@@ -127,6 +144,18 @@ def display_comparison_results(results):
                 print(f"{method}: +{diff_percent:.2f}%")
             else:
                 print(f"{method}: {diff_percent:.2f}%")
+        print("")
+        print(
+            "Disk usage differences compared to other methods (`+` is more than selected):")
+        for method, diff in results['disk_usage_diffs'].items():
+            if results['disk_usage'] > 0:
+                diff_percent = (diff / results['disk_usage']) * 100
+                if diff > 0:
+                    print(f"{method}: +{diff_percent:.2f}%")
+                else:
+                    print(f"{method}: {diff_percent:.2f}%")
+            else:
+                print(f"{method}: Unable to compare disk use ~0.00")
         print("")
     print(f"Core usage per method:")
 
