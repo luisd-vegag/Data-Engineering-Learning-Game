@@ -36,17 +36,17 @@ def run_scenario(scenario):
     if compare_methods:
         for method in scenario['methods']:
             print(f'Processing {method}')
-            results, cpu_time, cpu_total_usage, cpu_usage, disk_usage = run_operation(
+            results, cpu_time, cpu_total_usage, cpu_usage = run_operation(
                 method, numbers)
 
             processing_results.append(
-                {'method': method, 'cpu_time': cpu_time, 'cpu_total_usage': cpu_total_usage, 'cpu_usage': cpu_usage, 'disk_usage': disk_usage})
+                {'method': method, 'cpu_time': cpu_time, 'cpu_total_usage': cpu_total_usage, 'cpu_usage': cpu_usage})
     else:
         print(f'Processing {selected_method}')
-        results, cpu_time, cpu_total_usage, cpu_usage, disk_usage = run_operation(
+        results, cpu_time, cpu_total_usage, cpu_usage = run_operation(
             selected_method, numbers)
         processing_results.append(
-            {'method': selected_method, 'cpu_time': cpu_time, 'cpu_total_usage': cpu_total_usage, 'cpu_usage': cpu_usage, 'disk_usage': disk_usage})
+            {'method': selected_method, 'cpu_time': cpu_time, 'cpu_total_usage': cpu_total_usage, 'cpu_usage': cpu_usage})
 
     # gd.delete_files(input_files)
 
@@ -63,21 +63,21 @@ def run_operation(method, numbers):
     cpu_time_list = []
     cpu_total_usage_list = []
     cpu_usage_list = []
-    disk_usage_list = []
+
     # Execute the selected method for the specified number of iterations
     for i in range(num_iterations):
         # Read in the input files using the selected parallel file I/O method
         if method == "multiprocessing":
-            results, cpu_time, cpu_total_usage, cpu_usage, disk_usage = pm.measure_function(
+            results, cpu_time, cpu_total_usage, cpu_usage = pm.measure_function(
                 multiprocessing.run_square, numbers)
         elif method == "threading":
-            results, cpu_time, cpu_total_usage, cpu_usage, disk_usage = pm.measure_function(
+            results, cpu_time, cpu_total_usage, cpu_usage = pm.measure_function(
                 threading.run_square, numbers)
         elif method == "concurrent_futures_process_pool":
-            results, cpu_time, cpu_total_usage, cpu_usage, disk_usage = pm.measure_function(
+            results, cpu_time, cpu_total_usage, cpu_usage = pm.measure_function(
                 cf_process_pool.run_square, numbers)
         elif method == "concurrent_futures_thread_pool":
-            results, cpu_time, cpu_total_usage, cpu_usage, disk_usage = pm.measure_function(
+            results, cpu_time, cpu_total_usage, cpu_usage = pm.measure_function(
                 cf_thread_pool.run_square, numbers)
         else:
             raise ValueError("Invalid method selected.")
@@ -86,12 +86,10 @@ def run_operation(method, numbers):
         cpu_time_list.append(cpu_time)
         cpu_total_usage_list.append(cpu_total_usage)
         cpu_usage_list.append(cpu_usage)
-        disk_usage_list.append(disk_usage)
 
     # Average the measurements across all iterations
     cpu_time = sum(cpu_time_list) / num_iterations
     cpu_total_usage = sum(cpu_total_usage_list) / num_iterations
-    disk_usage = sum(disk_usage_list) / num_iterations
     cpu_usage = []
 
     # Sort the cpu_usage list in descending order and format each item to 2 decimal places
@@ -102,4 +100,4 @@ def run_operation(method, numbers):
     cpu_usage = [round(sum(core)/len(core), 2)
                  for core in zip(*cpu_usage_list)]
 
-    return results, cpu_time, cpu_total_usage, cpu_usage, disk_usage
+    return results, cpu_time, cpu_total_usage, cpu_usage
