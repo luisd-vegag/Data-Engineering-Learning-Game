@@ -18,3 +18,19 @@ def read_csv_files(files):
     with concurrent.futures.ThreadPoolExecutor() as executor:
         results = list(executor.map(read_csv_file, files))
     return results
+
+# Define a CPU-bound function to run in parallel
+
+
+def square(number):
+    result = 0
+    for i in range(number):
+        result += i ** 2
+    return result
+
+
+# Define a function to run the square function using concurrent.futures
+def run_square(numbers):
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        results = list(executor.map(square, numbers))
+    return results

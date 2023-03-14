@@ -1,9 +1,13 @@
-from . import cf_process_pool, cf_thread_pool, multiprocessing, threading, dask, pyspark
+from ..processing_methods import cf_process_pool, cf_thread_pool, multiprocessing, threading, dask, pyspark
 from .. import performance_metrics as pm
 import generate_data as gd
 
 
 def run_scenario(scenario):
+
+    # Generate csv files
+    input_files = gd.generate_csv_files(
+        path=scenario['input_dir_path'], num_rows=10000)
 
     # Display list of scenarios
     print("Available Methods:")
@@ -28,10 +32,6 @@ def run_scenario(scenario):
     else:
         print("Invalid response.")
         return
-
-    # Generate csv files
-    input_files = gd.generate_csv_files(
-        path=scenario['input_dir_path'], num_rows=10000)
 
     processing_results = list()
 

@@ -28,3 +28,27 @@ def read_csv_files(files):
         result = queue.get()
         results.append(result)
     return results
+
+
+def square(number):
+    result = 0
+    for i in range(number):
+        result += i ** 2
+    return result
+
+
+# Define a function to read CSV files using threading
+def run_square(numbers):
+    results = []
+    queue = q.Queue()
+    threads = []
+    for number in numbers:
+        t = threading.Thread(target=square, args=(number, queue))
+        threads.append(t)
+        t.start()
+    for t in threads:
+        t.join()
+    while not queue.empty():
+        result = queue.get()
+        results.append(result)
+    return results
