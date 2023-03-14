@@ -29,7 +29,8 @@ def generate_users_data(path: str = '', num_rows: int = 100) -> str:
 
     # Delete the file if it already exists
     if os.path.exists(filename):
-        os.remove(filename)
+        return filename
+        # os.remove(filename)
         # print(f"File {filename} deleted successfully.")
 
     # Create the directory if it does not exist
@@ -51,8 +52,9 @@ def generate_users_data(path: str = '', num_rows: int = 100) -> str:
                 fake.city(),
             ]
             writer.writerow(row)
+            print(i)
 
-    # print(f"File {filename} created successfully.")
+    print(f"File {filename} created successfully.")
     return filename
 
 
@@ -63,7 +65,8 @@ def generate_sales_data(path: str = '', num_rows: int = 100) -> None:
 
     # Delete the file if it already exists
     if os.path.exists(filename):
-        os.remove(filename)
+        return filename
+        # os.remove(filename)
         # print(f"File {filename} deleted successfully.")
 
     # Create the directory if it does not exist
@@ -93,8 +96,9 @@ def generate_sales_data(path: str = '', num_rows: int = 100) -> None:
                 date,
             ]
             writer.writerow(row)
+            print(i)
 
-    # print(f"File {filename} created successfully.")
+    print(f"File {filename} created successfully.")
     return filename
 
 
@@ -105,7 +109,8 @@ def generate_product_date(path: str = '', num_rows: int = 100) -> None:
 
     # Delete the file if it already exists
     if os.path.exists(filename):
-        os.remove(filename)
+        return filename
+        # os.remove(filename)
         # print(f"File {filename} deleted successfully.")
 
     # Create the directory if it does not exist
@@ -136,8 +141,9 @@ def generate_product_date(path: str = '', num_rows: int = 100) -> None:
                 price,
             ]
             writer.writerow(row)
+            print(i)
 
-    # print(f"File {filename} created successfully.")
+    print(f"File {filename} created successfully.")
     return filename
 
 
@@ -148,7 +154,8 @@ def generate_customer_data(path: str = '', num_rows: int = 100) -> None:
 
     # Delete the file if it already exists
     if os.path.exists(filename):
-        os.remove(filename)
+        return filename
+        # os.remove(filename)
         # print(f"File {filename} deleted successfully.")
 
     # Create the directory if it does not exist
@@ -178,6 +185,11 @@ def generate_customer_data(path: str = '', num_rows: int = 100) -> None:
                 address,
             ]
             writer.writerow(row)
+            print(i)
 
-    # print(f"File {filename} created successfully.")
+    print(f"File {filename} created successfully.")
     return filename
+
+
+if __name__ == '__main__':
+    generate_csv_files()

@@ -12,11 +12,9 @@ def read_csv_file(file):
             data.append(row)
         return data
 
+
 # Define a function to read CSV files using concurrent.futures
-
-
 def read_csv_files(files):
-    # concurrent.futures.ProcessPoolExecutor
     with concurrent.futures.ThreadPoolExecutor() as executor:
         results = list(executor.map(read_csv_file, files))
     return results

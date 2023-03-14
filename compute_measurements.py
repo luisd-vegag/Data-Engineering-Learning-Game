@@ -108,26 +108,27 @@ def display_comparison_results(results):
     print(f"Comparison results for {results['method']} method:")
     print(f"CPU time: {results['cpu_time']:.4f}")
     print(f"CPU total usage: {results['cpu_total_usage']:.2f}%")
-    print("")
 
-    print("CPU time differences compared to other methods (`+` is less than selected):")
-    for method, diff in results['cpu_time_diffs'].items():
-        diff_percent = (diff / results['cpu_time']) * 100
-        if diff > 0:
-            print(f"{method}: +{diff_percent:.2f}%")
-        else:
-            print(f"{method}: {diff_percent:.2f}%")
+    if len(results['cpu_time_diffs']) > 0:
+        print("")
+        print("CPU time differences compared to other methods (`+` is less than selected):")
+        for method, diff in results['cpu_time_diffs'].items():
+            diff_percent = (diff / results['cpu_time']) * 100
+            if diff > 0:
+                print(f"{method}: +{diff_percent:.2f}%")
+            else:
+                print(f"{method}: {diff_percent:.2f}%")
 
-    print("")
-    print("CPU total usage differences compared to other methods (`+` is more than selected):")
-
-    for method, diff in results['cpu_total_usage_diffs'].items():
-        diff_percent = (diff / results['cpu_total_usage']) * 100
-        if diff > 0:
-            print(f"{method}: +{diff_percent:.2f}%")
-        else:
-            print(f"{method}: {diff_percent:.2f}%")
-    print("")
+        print("")
+        print("CPU total usage differences compared to other methods (`+` is more than selected):")
+        for method, diff in results['cpu_total_usage_diffs'].items():
+            diff_percent = (diff / results['cpu_total_usage']) * 100
+            if diff > 0:
+                print(f"{method}: +{diff_percent:.2f}%")
+            else:
+                print(f"{method}: {diff_percent:.2f}%")
+        print("")
     print(f"Core usage per method:")
+
     for method, core_usage in results['cpu_usage_per_core_per_method'].items():
-        print(f"{method.ljust(20)}: {core_usage}")
+        print(f"{method.rjust(35)}: {core_usage}")

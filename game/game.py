@@ -1,7 +1,7 @@
 import time
 from scenarios.scenarios import scenarios
-from data_processing import data_processing
-from player import Player
+from scenarios.scenario_001 import data_processing
+from game.player import Player
 import generate_data as gd
 import compute_measurements as cm
 
@@ -33,32 +33,42 @@ def main():
     # Prompt user to select processing method
     method_index = int(
         input("Please select a method to run this scenario by entering its index number: "))
+
     if method_index >= len(scenario['methods']):
         print(
             f"Invalid method index. Please select a number between 0 and {len(scenario['methods']) - 1}")
         return
     selected_method = scenario['methods'][method_index]
+    # Prompt user to ask if want to compare avaiabe methods
+    compare_methods = input(
+        "Do you want to compare the available methods? (y/n): ")
+    if compare_methods.lower() == "y":
+        compare_methods = True
+    elif compare_methods.lower() == "n":
+        compare_methods = False
+    else:
+        print("Invalid response.")
+        return
 
     # Generate csv files
-    # input_files = gd.generate_csv_files(
-    #    path='system/data_10k/', num_rows=10000)
-
-    # input_files = ['system/data_10k/users.csv', 'system/data_10k/sales.csv',
-    #               'system/data_10k/products.csv', 'system/data_10k/customers.csv']
-    input_files = ['system/data_100k/users.csv', 'system/data_100k/sales.csv',
-                   'system/data_100k/products.csv', 'system/data_100k/customers.csv']
-    # input_files = ['system/data_1m/users.csv', 'system/data_1m/sales.csv',
-    #                'system/data_1m/products.csv', 'system/data_1m/customers.csv']
+    input_files = gd.generate_csv_files(
+        path='system/data_10k/', num_rows=10000)
 
     processing_results = list()
 
-    for method in scenario['methods']:
-        time.sleep(2)
-        print(f'Processing {method}')
+    if compare_methods:
+        for method in scenario['methods']:
+            print(f'Processing {method}')
+            results, cpu_time, cpu_total_usage, cpu_usage = data_processing.run_scenario(
+                scenario, input_files, method)
+            processing_results.append(
+                {'method': method, 'cpu_time': cpu_time, 'cpu_total_usage': cpu_total_usage, 'cpu_usage': cpu_usage})
+    else:
+        print(f'Processing {selected_method}')
         results, cpu_time, cpu_total_usage, cpu_usage = data_processing.run_scenario(
-            scenario, input_files, method)
+            scenario, input_files, selected_method)
         processing_results.append(
-            {'method': method, 'cpu_time': cpu_time, 'cpu_total_usage': cpu_total_usage, 'cpu_usage': cpu_usage})
+            {'method': selected_method, 'cpu_time': cpu_time, 'cpu_total_usage': cpu_total_usage, 'cpu_usage': cpu_usage})
 
     # gd.delete_files(input_files)
 

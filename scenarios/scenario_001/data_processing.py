@@ -1,4 +1,4 @@
-from . import multiprocessing, threading, concurrent_futures, dask, pyspark
+from . import cf_process_pool, cf_thread_pool, multiprocessing, threading, dask, pyspark
 import pandas as pd
 import compute_measurements as cm
 from pyspark.sql import SparkSession
@@ -14,11 +14,6 @@ def run_scenario(scenario, input_files, method):
     cpu_total_usage_list = []
     cpu_usage_list = []
 
-    # Create Spark session
-    spark = SparkSession.builder.appName("ReadCSVFiles").getOrCreate()
-    # Set the log level to ERROR to remove WARN and INFO logs
-    spark.sparkContext.setLogLevel("ERROR")
-
     # Execute the selected method for the specified number of iterations
     for i in range(num_iterations):
         # Read in the input files using the selected parallel file I/O method
@@ -28,15 +23,24 @@ def run_scenario(scenario, input_files, method):
         elif method == "threading":
             results, cpu_time, cpu_total_usage, cpu_usage = cm.measure_function(
                 threading.read_csv_files, input_files)
-        elif method == "concurrent_futures":
+        elif method == "concurrent_futures_process_pool":
             results, cpu_time, cpu_total_usage, cpu_usage = cm.measure_function(
-                concurrent_futures.read_csv_files, input_files)
+                cf_process_pool.read_csv_files, input_files)
+        elif method == "concurrent_futures_thread_pool":
+            results, cpu_time, cpu_total_usage, cpu_usage = cm.measure_function(
+                cf_thread_pool.read_csv_files, input_files)
         elif method == "dask":
             results, cpu_time, cpu_total_usage, cpu_usage = cm.measure_function(
                 dask.read_csv_files, input_files)
         elif method == "pyspark":
+            # Create Spark session
+            spark = SparkSession.builder.appName("ReadCSVFiles").getOrCreate()
+            # Set the log level to ERROR to remove WARN and INFO logs
+            spark.sparkContext.setLogLevel("ERROR")
             results, cpu_time, cpu_total_usage, cpu_usage = cm.measure_function(
                 pyspark.read_csv_files, spark, input_files)
+            # Stop python sesion
+            spark.stop()
         else:
             raise ValueError("Invalid method selected.")
 
@@ -44,9 +48,6 @@ def run_scenario(scenario, input_files, method):
         cpu_time_list.append(cpu_time)
         cpu_total_usage_list.append(cpu_total_usage)
         cpu_usage_list.append(cpu_usage)
-
-    # Stop python sesion
-    spark.stop()
 
     # Average the measurements across all iterations
     cpu_time = sum(cpu_time_list) / num_iterations
