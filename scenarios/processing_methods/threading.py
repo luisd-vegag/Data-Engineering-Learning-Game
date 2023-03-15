@@ -30,14 +30,14 @@ def read_csv_files(files):
     return results
 
 
-def square(number):
+def square(number, queue):
     result = 0
     for i in range(number):
         result += i ** 2
-    return result
+    queue.put(result)
 
 
-# Define a function to read CSV files using threading
+# Define a function to run the square function using threading
 def run_square(numbers):
     results = []
     queue = q.Queue()

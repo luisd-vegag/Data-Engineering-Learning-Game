@@ -1,11 +1,13 @@
-from .. import performance_metrics as pm
 from ..processing_methods import cf_process_pool, cf_thread_pool, multiprocessing, threading, dask, pyspark
+from .. import performance_metrics as pm
+import generate_data as gd
 
 
 def run_scenario(scenario):
 
     # Generate csv files
-    numbers = scenario['numbers']
+    input_files = gd.generate_csv_files(
+        path=scenario['input_dir_path'], num_rows=10000)
 
     # Display list of scenarios
     print("Available Methods:")
@@ -37,14 +39,14 @@ def run_scenario(scenario):
         for method in scenario['methods']:
             print(f'Processing {method}')
             results, cpu_time, cpu_total_usage, cpu_usage = run_operation(
-                method, numbers)
+                method, input_files)
 
             processing_results.append(
                 {'method': method, 'cpu_time': cpu_time, 'cpu_total_usage': cpu_total_usage, 'cpu_usage': cpu_usage})
     else:
         print(f'Processing {selected_method}')
         results, cpu_time, cpu_total_usage, cpu_usage = run_operation(
-            selected_method, numbers)
+            selected_method, input_files)
         processing_results.append(
             {'method': selected_method, 'cpu_time': cpu_time, 'cpu_total_usage': cpu_total_usage, 'cpu_usage': cpu_usage})
 
@@ -54,7 +56,7 @@ def run_scenario(scenario):
         selected_method, processing_results)
 
 
-def run_operation(method, numbers):
+def run_operation(method, input_files):
     # Define the number of iterations to perform
     num_iterations = 4
 
@@ -69,16 +71,22 @@ def run_operation(method, numbers):
         # Read in the input files using the selected parallel file I/O method
         if method == "multiprocessing":
             results, cpu_time, cpu_total_usage, cpu_usage = pm.measure_function(
-                multiprocessing.run_square, numbers)
+                multiprocessing.read_csv_files, input_files)
         elif method == "threading":
             results, cpu_time, cpu_total_usage, cpu_usage = pm.measure_function(
-                threading.run_square, numbers)
+                threading.read_csv_files, input_files)
         elif method == "concurrent_futures_process_pool":
             results, cpu_time, cpu_total_usage, cpu_usage = pm.measure_function(
-                cf_process_pool.run_square, numbers)
+                cf_process_pool.read_csv_files, input_files)
         elif method == "concurrent_futures_thread_pool":
             results, cpu_time, cpu_total_usage, cpu_usage = pm.measure_function(
-                cf_thread_pool.run_square, numbers)
+                cf_thread_pool.read_csv_files, input_files)
+        elif method == "dask":
+            results, cpu_time, cpu_total_usage, cpu_usage = pm.measure_function(
+                dask.read_csv_files, input_files)
+        elif method == "pyspark":
+            results, cpu_time, cpu_total_usage, cpu_usage = pm.measure_function(
+                pyspark.read_csv_files, input_files)
         else:
             raise ValueError("Invalid method selected.")
 

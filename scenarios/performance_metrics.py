@@ -116,11 +116,11 @@ def display_comparison_results(results):
     print("")
     print(f"Comparison results for {results['method']} method:")
     print(f"CPU time: {results['cpu_time']:.4f}")
-    print(f"CPU total usage: {results['cpu_total_usage']:.2f}%")
+    print(f"CPU usage: {results['cpu_total_usage']:.2f}%")
 
     if len(results['cpu_time_diffs']) > 0:
         print("")
-        print("CPU time differences compared to other methods (`+` is less than selected):")
+        print("CPU time differences compared to other methods (`+` is less time than selected):")
         for method, diff in results['cpu_time_diffs'].items():
             diff_percent = (diff / results['cpu_time']) * 100
             if diff > 0:
@@ -128,6 +128,15 @@ def display_comparison_results(results):
             else:
                 print(f"{method}: {diff_percent:.2f}%")
 
+        print("")
+        print("CPU usage differences compared to other methods (`+` is more CPU than selected):")
+        for method, diff in results['cpu_total_usage_diffs'].items():
+            diff = diff*-1
+            diff_percent = (diff / results['cpu_total_usage']) * 100
+            if diff > 0:
+                print(f"{method}: +{diff_percent:.2f}%")
+            else:
+                print(f"{method}: {diff_percent:.2f}%")
         print("")
 
     print(f"Core usage per method:")
