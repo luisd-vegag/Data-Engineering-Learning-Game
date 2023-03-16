@@ -11,11 +11,11 @@ import time
 
 '''
 # TODO:
+    - Add missing processing methods
     - Something is wrong with the CPU time calculation for cf_process_pool. \
         The time shown is way less than the real one. \
         I think that it is something related with the \
             `concurrent.futures.as_copleted`
-    - Add missing processing methods
 '''
 
 
@@ -86,18 +86,18 @@ def run_operation(method, path, num_rows, generate_funcs):
     for i in range(num_iterations):
         clear_directory(path)
         # Read in the input files using the selected parallel file I/O method
-        # if method == "multiprocessing":
-        #    results, cpu_time, cpu_total_usage, cpu_usage = pm.measure_function(
-        #        multiprocessing.generate_csv_files,  path, num_rows, generate_funcs)
-        # elif method == "threading":
-        #    results, cpu_time, cpu_total_usage, cpu_usage = pm.measure_function(
-        #        threading.generate_csv_files,  path, num_rows, generate_funcs)
-        if method == "concurrent_futures_process_pool":
+        if method == "multiprocessing":
+            results, cpu_time, cpu_total_usage, cpu_usage = pm.measure_function(
+                multiprocessing.generate_csv_files,  path, num_rows, generate_funcs)
+        elif method == "threading":
+            results, cpu_time, cpu_total_usage, cpu_usage = pm.measure_function(
+                threading.generate_csv_files,  path, num_rows, generate_funcs)
+        elif method == "concurrent_futures_process_pool":
             results, cpu_time, cpu_total_usage, cpu_usage = pm.measure_function(
                 cf_process_pool.generate_csv_files,  path, num_rows, generate_funcs)
-        # elif method == "concurrent_futures_thread_pool":
-        #    results, cpu_time, cpu_total_usage, cpu_usage = pm.measure_function(
-        #        cf_thread_pool.generate_csv_files,  path, num_rows, generate_funcs)
+        elif method == "concurrent_futures_thread_pool":
+            results, cpu_time, cpu_total_usage, cpu_usage = pm.measure_function(
+                cf_thread_pool.generate_csv_files,  path, num_rows, generate_funcs)
         else:
             raise ValueError("Invalid method selected.")
 

@@ -1,5 +1,6 @@
 import csv
 import concurrent.futures
+from typing import Callable, List
 
 # Define a function to read a CSV file
 
@@ -19,6 +20,7 @@ def read_csv_files(files):
         results = list(executor.map(read_csv_file, files))
     return results
 
+# ---------------------------
 # Define a CPU-bound function to run in parallel
 
 
@@ -34,3 +36,20 @@ def run_square(numbers):
     with concurrent.futures.ThreadPoolExecutor() as executor:
         results = list(executor.map(square, numbers))
     return results
+
+
+# ---------------------------------
+def generate_csv_files(path: str, num_rows: int, generate_funcs: List[Callable[[str, int], str]]) -> List[str]:
+    if not generate_funcs:
+        return None
+    files = []
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        futures = []
+        for generate_func in generate_funcs:
+            future = executor.submit(generate_func, path, num_rows)
+            futures.append(future)
+        for future in concurrent.futures.as_completed(futures):
+            result = future.result()
+            if result:
+                files.append(result)
+    return files

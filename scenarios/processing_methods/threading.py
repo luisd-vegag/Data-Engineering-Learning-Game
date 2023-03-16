@@ -1,6 +1,7 @@
 import csv
 import threading
 import queue as q
+from typing import Callable, List
 
 
 # Define a function to read a CSV file
@@ -29,6 +30,8 @@ def read_csv_files(files):
         results.append(result)
     return results
 
+# ---------------------------------------------------
+
 
 def square(number, queue):
     result = 0
@@ -52,3 +55,35 @@ def run_square(numbers):
         result = queue.get()
         results.append(result)
     return results
+
+
+# ----------------------------------
+
+
+def generate_csv_files(path: str, num_rows: int, generate_funcs: List[Callable[[str, int], str]]) -> List[str]:
+    if not generate_funcs:
+        return None
+    files = []
+    # Create a thread-safe queue to hold the generated file names
+    result_queue = q.Queue()
+
+    def generate_file(generate_func: Callable[[str, int], str]):
+        # Generate the file using the given function and add the result to the queue
+        result = generate_func(path, num_rows)
+        if result:
+            result_queue.put(result)
+
+    # Create a thread for each generate function and start them
+    threads = []
+    for generate_func in generate_funcs:
+        thread = threading.Thread(target=generate_file, args=(generate_func,))
+        thread.start()
+        threads.append(thread)
+
+    # Wait for all threads to finish and collect the results from the queue
+    for thread in threads:
+        thread.join()
+    while not result_queue.empty():
+        files.append(result_queue.get())
+
+    return files
