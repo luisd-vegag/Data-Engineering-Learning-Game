@@ -36,17 +36,17 @@ def run_scenario(scenario):
     if compare_methods:
         for method in scenario['methods']:
             print(f'Processing {method}')
-            results, cpu_time, cpu_total_usage, cpu_usage = run_operation(
+            results, cpu_time, cpu_total_usage, cpu_usage, wall_clock_time = run_operation(
                 method, numbers)
 
             processing_results.append(
-                {'method': method, 'cpu_time': cpu_time, 'cpu_total_usage': cpu_total_usage, 'cpu_usage': cpu_usage})
+                {'method': method, 'cpu_time': cpu_time, 'wall_clock_time': wall_clock_time, 'cpu_total_usage': cpu_total_usage, 'cpu_usage': cpu_usage})
     else:
         print(f'Processing {selected_method}')
-        results, cpu_time, cpu_total_usage, cpu_usage = run_operation(
+        results, cpu_time, cpu_total_usage, cpu_usage, wall_clock_time = run_operation(
             selected_method, numbers)
         processing_results.append(
-            {'method': selected_method, 'cpu_time': cpu_time, 'cpu_total_usage': cpu_total_usage, 'cpu_usage': cpu_usage})
+            {'method': selected_method, 'cpu_time': cpu_time, 'wall_clock_time': wall_clock_time, 'cpu_total_usage': cpu_total_usage, 'cpu_usage': cpu_usage})
 
     # gd.delete_files(input_files)
 
@@ -63,21 +63,22 @@ def run_operation(method, numbers):
     cpu_time_list = []
     cpu_total_usage_list = []
     cpu_usage_list = []
+    wall_clock_time_list = []
 
     # Execute the selected method for the specified number of iterations
     for i in range(num_iterations):
         # Read in the input files using the selected parallel file I/O method
         if method == "multiprocessing":
-            results, cpu_time, cpu_total_usage, cpu_usage = pm.measure_function(
+            results, cpu_time, cpu_total_usage, cpu_usage, wall_clock_time = pm.measure_performance(
                 multiprocessing.run_square, numbers)
         elif method == "threading":
-            results, cpu_time, cpu_total_usage, cpu_usage = pm.measure_function(
+            results, cpu_time, cpu_total_usage, cpu_usage, wall_clock_time = pm.measure_performance(
                 threading.run_square, numbers)
         elif method == "concurrent_futures_process_pool":
-            results, cpu_time, cpu_total_usage, cpu_usage = pm.measure_function(
+            results, cpu_time, cpu_total_usage, cpu_usage, wall_clock_time = pm.measure_performance(
                 cf_process_pool.run_square, numbers)
         elif method == "concurrent_futures_thread_pool":
-            results, cpu_time, cpu_total_usage, cpu_usage = pm.measure_function(
+            results, cpu_time, cpu_total_usage, cpu_usage, wall_clock_time = pm.measure_performance(
                 cf_thread_pool.run_square, numbers)
         else:
             raise ValueError("Invalid method selected.")
@@ -86,9 +87,11 @@ def run_operation(method, numbers):
         cpu_time_list.append(cpu_time)
         cpu_total_usage_list.append(cpu_total_usage)
         cpu_usage_list.append(cpu_usage)
+        wall_clock_time_list.append(wall_clock_time)
 
     # Average the measurements across all iterations
     cpu_time = sum(cpu_time_list) / num_iterations
+    wall_clock_time = sum(wall_clock_time_list) / num_iterations
     cpu_total_usage = sum(cpu_total_usage_list) / num_iterations
     cpu_usage = []
 
@@ -100,4 +103,4 @@ def run_operation(method, numbers):
     cpu_usage = [round(sum(core)/len(core), 2)
                  for core in zip(*cpu_usage_list)]
 
-    return results, cpu_time, cpu_total_usage, cpu_usage
+    return results, cpu_time, cpu_total_usage, cpu_usage, wall_clock_time

@@ -11,11 +11,6 @@ import time
 
 '''
 # TODO:
-    - Add missing processing methods
-    - Something is wrong with the CPU time calculation for cf_process_pool. \
-        The time shown is way less than the real one. \
-        I think that it is something related with the \
-            `concurrent.futures.as_copleted`
 '''
 
 
@@ -50,17 +45,17 @@ def run_scenario(scenario):
     if compare_methods:
         for method in scenario['methods']:
             print(f'Processing {method}')
-            results, cpu_time, cpu_total_usage, cpu_usage = run_operation(
+            results, cpu_time, cpu_total_usage, cpu_usage, wall_clock_time = run_operation(
                 method,  scenario['output_dir_path'], scenario['num_rows'], scenario['functions'])
 
             processing_results.append(
-                {'method': method, 'cpu_time': cpu_time, 'cpu_total_usage': cpu_total_usage, 'cpu_usage': cpu_usage})
+                {'method': method, 'cpu_time': cpu_time, 'wall_clock_time': wall_clock_time, 'cpu_total_usage': cpu_total_usage, 'cpu_usage': cpu_usage})
     else:
         print(f'Processing {selected_method}')
-        results, cpu_time, cpu_total_usage, cpu_usage = run_operation(
+        results, cpu_time, cpu_total_usage, cpu_usage, wall_clock_time = run_operation(
             selected_method,  scenario['output_dir_path'], scenario['num_rows'], scenario['functions'])
         processing_results.append(
-            {'method': selected_method, 'cpu_time': cpu_time, 'cpu_total_usage': cpu_total_usage, 'cpu_usage': cpu_usage})
+            {'method': selected_method, 'cpu_time': cpu_time, 'wall_clock_time': wall_clock_time, 'cpu_total_usage': cpu_total_usage, 'cpu_usage': cpu_usage})
 
     # gd.delete_files(input_files)
 
@@ -77,6 +72,7 @@ def run_operation(method, path, num_rows, generate_funcs):
     cpu_time_list = []
     cpu_total_usage_list = []
     cpu_usage_list = []
+    wall_clock_time_list = []
 
     # Import the generate functions by their names
     generate_funcs = [getattr(importlib.import_module(
@@ -87,16 +83,16 @@ def run_operation(method, path, num_rows, generate_funcs):
         clear_directory(path)
         # Read in the input files using the selected parallel file I/O method
         if method == "multiprocessing":
-            results, cpu_time, cpu_total_usage, cpu_usage = pm.measure_function(
+            results, cpu_time, cpu_total_usage, cpu_usage, wall_clock_time = pm.measure_performance(
                 multiprocessing.generate_csv_files,  path, num_rows, generate_funcs)
         elif method == "threading":
-            results, cpu_time, cpu_total_usage, cpu_usage = pm.measure_function(
+            results, cpu_time, cpu_total_usage, cpu_usage, wall_clock_time = pm.measure_performance(
                 threading.generate_csv_files,  path, num_rows, generate_funcs)
         elif method == "concurrent_futures_process_pool":
-            results, cpu_time, cpu_total_usage, cpu_usage = pm.measure_function(
+            results, cpu_time, cpu_total_usage, cpu_usage, wall_clock_time = pm.measure_performance(
                 cf_process_pool.generate_csv_files,  path, num_rows, generate_funcs)
         elif method == "concurrent_futures_thread_pool":
-            results, cpu_time, cpu_total_usage, cpu_usage = pm.measure_function(
+            results, cpu_time, cpu_total_usage, cpu_usage, wall_clock_time = pm.measure_performance(
                 cf_thread_pool.generate_csv_files,  path, num_rows, generate_funcs)
         else:
             raise ValueError("Invalid method selected.")
@@ -105,13 +101,11 @@ def run_operation(method, path, num_rows, generate_funcs):
         cpu_time_list.append(cpu_time)
         cpu_total_usage_list.append(cpu_total_usage)
         cpu_usage_list.append(cpu_usage)
-
-    print(cpu_time_list)
-    print(cpu_total_usage_list)
-    print(cpu_usage_list)
+        wall_clock_time_list.append(wall_clock_time)
 
     # Average the measurements across all iterations
     cpu_time = sum(cpu_time_list) / num_iterations
+    wall_clock_time = sum(wall_clock_time_list) / num_iterations
     cpu_total_usage = sum(cpu_total_usage_list) / num_iterations
     cpu_usage = []
 
@@ -123,7 +117,7 @@ def run_operation(method, path, num_rows, generate_funcs):
     cpu_usage = [round(sum(core)/len(core), 2)
                  for core in zip(*cpu_usage_list)]
 
-    return results, cpu_time, cpu_total_usage, cpu_usage
+    return results, cpu_time, cpu_total_usage, cpu_usage, wall_clock_time
 
 
 def clear_directory(directory_path):
@@ -139,7 +133,7 @@ def clear_directory(directory_path):
                     shutil.rmtree(file_path)
             except Exception as e:
                 print(f"Error removing file or directory {file_path}: {e}")
-        print(f"Directory {directory_path} in now empty")
+        # print(f"Directory {directory_path} in now empty")
     else:
         # If the directory does not exist, print an error message
         pass
@@ -170,7 +164,7 @@ def generate_users_data(path: str = '', num_rows: int = 100) -> str:
             ]
             writer.writerow(row)
 
-    print(f"File {filename} created successfully.")
+    # print(f"File {filename} created successfully.")
     return filename
 
 
@@ -207,7 +201,7 @@ def generate_sales_data(path: str = '', num_rows: int = 100) -> None:
             ]
             writer.writerow(row)
 
-    print(f"File {filename} created successfully.")
+    # print(f"File {filename} created successfully.")
     return filename
 
 
@@ -245,7 +239,7 @@ def generate_product_date(path: str = '', num_rows: int = 100) -> None:
             ]
             writer.writerow(row)
 
-    print(f"File {filename} created successfully.")
+    # print(f"File {filename} created successfully.")
     return filename
 
 
@@ -282,5 +276,5 @@ def generate_customer_data(path: str = '', num_rows: int = 100) -> None:
             ]
             writer.writerow(row)
 
-    print(f"File {filename} created successfully.")
+    # print(f"File {filename} created successfully.")
     return filename
