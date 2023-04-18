@@ -1,6 +1,7 @@
 from .scenario_001 import module as scenario_001_module
 from .scenario_002 import module as scenario_002_module
 from .scenario_003 import module as scenario_003_module
+from .scenario_004 import module as scenario_004_module
 
 '''
 # TODO:
@@ -36,5 +37,28 @@ scenarios = [
         "input_dir_path": "./system/data_100k/",
         "methods": ["multiprocessing", "threading", "concurrent_futures_process_pool", "concurrent_futures_thread_pool", "dask", "pyspark"],
         "module": scenario_003_module
+    },
+    {
+        "id": "004",
+        "topic": "SQL",
+        "name": "Creating a table and inserting data",
+        "description": "Demonstrate how to create a table in a SQLite database and insert data into it.",
+        "database": "./system/scenario_004/data.db",
+        "table": "students",
+        "schema": {"column1": "id",
+                   "datatype1": "INTEGER PRIMARY KEY",
+                   "column2": "name",
+                   "datatype2": "TEXT",
+                   "column3": "age",
+                   "datatype3": "INTEGER",
+                   "column4": "gender",
+                   "datatype4": "TEXT"},
+        "data": [
+            {"id": 1, "name": "John", "age": 20, "gender": "Male"},
+            {"id": 2, "name": "Sarah", "age": 22, "gender": "Female"},
+            {"id": 3, "name": "Bob", "age": 19, "gender": "Male"},
+            {"id": 4, "name": "Linda", "age": 21, "gender": "Female"}
+        ],
+        "module": scenario_004_module
     },
 ]
