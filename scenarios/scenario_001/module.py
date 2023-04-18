@@ -1,5 +1,5 @@
-from .. import performance_metrics as pm
-from ..processing_methods import cf_process_pool, cf_thread_pool, multiprocessing, threading, dask, pyspark
+from algorithms import performance_metrics as pm
+from algorithms.processing_methods import cf_process_pool, cf_thread_pool, multiprocessing, threading, dask, pyspark
 
 
 def run_scenario(scenario):

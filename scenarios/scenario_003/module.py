@@ -1,10 +1,9 @@
-from ..processing_methods import cf_process_pool, cf_thread_pool, multiprocessing, threading, dask, pyspark
-from .. import performance_metrics as pm
-import generate_data as gd
+from algorithms.processing_methods import cf_process_pool, cf_thread_pool, multiprocessing, threading, dask, pyspark
+from algorithms import performance_metrics as pm
+import algorithms.data_generators.generate_data as gd
 
 
 def run_scenario(scenario):
-
     # Generate csv files
     input_files = gd.generate_csv_files(
         path=scenario['input_dir_path'], num_rows=10000)
