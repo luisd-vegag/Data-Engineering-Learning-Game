@@ -5,7 +5,7 @@ import random
 import os
 
 
-def generate_csv_files(path: str = 'system/data/', num_rows: int = 100) -> List:
+def generate_csv_files(path: str = 'local/data/', num_rows: int = 100) -> List:
     files = list()
     files.append(generate_users_data(path, num_rows))
     files.append(generate_sales_data(path, num_rows))

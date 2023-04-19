@@ -19,14 +19,14 @@ def run_scenario(scenario):
     # Display list of scenarios
     print("Available Methods:")
     for i, method in enumerate(scenario["methods"]):
-        print(f"{i}: {method}")
+        print(f"{i+1}: {method}")
     # Prompt user to select processing method
     method_index = int(
         input("Please select a method to run this scenario by entering its index number: "))
 
     if method_index >= len(scenario['methods']):
         print(
-            f"Invalid method index. Please select a number between 0 and {len(scenario['methods']) - 1}")
+            f"Invalid method index. Please select a number between 1 and {len(scenario['methods'])}")
         return
     selected_method = scenario['methods'][method_index]
     # Prompt user to ask if want to compare avaiabe methods

@@ -20,10 +20,14 @@ def run_scenario(scenario):
     print("4. Remove table")
     print("5. Clear all data in table")
     print("6. View table data")
+    print("7. Update record in table")
+    print("8. Add column to table")
+    print("9. Remove column from table")
 
     operation = input("Please select an operation by entering its number: ")
 
     # Perform selected operation
+    # Create table
     if operation == "1":
         # Check if table already exists and delete it if it does
         cursor = conn.cursor()
@@ -34,17 +38,9 @@ def run_scenario(scenario):
             cursor.execute(f"DROP TABLE {scenario['table']}")
 
         # Prompt user to select SQL command for creating the table
-        create_table_options = ["CREATE TABLE", "NEW TABLE", "MAKE TABLE"]
+        operation_options = ["CREATE TABLE", "NEW TABLE", "MAKE TABLE"]
         print("Please select an option for creating the table:")
-        for i, option in enumerate(create_table_options):
-            print(f"{i}: {option}")
-        command_index = int(
-            input("Enter the index number of your selection: "))
-        if command_index not in range(len(create_table_options)):
-            print(
-                f"Invalid selection. Please enter an index number between 0 and {len(create_table_options)-1}.")
-            return
-        selected_command = create_table_options[command_index]
+        selected_command = prompt_options(operation_options)
 
         # Verify that the selected command is correct
         if selected_command != "CREATE TABLE":
@@ -58,6 +54,7 @@ def run_scenario(scenario):
         print(
             f"Table '{scenario['table']}' created in database '{scenario['database']}'")
 
+    # Insert data into table
     elif operation == "2":
         # Check if table exists
         query = f"SELECT name FROM sqlite_master WHERE type='table' AND name='{scenario['table']}'"
@@ -67,14 +64,20 @@ def run_scenario(scenario):
                 f"Table '{scenario['table']}' does not exist in database '{scenario['database']}'")
             return
 
-        # List current tables
-        print("Current tables in database:")
-        table_query = "SELECT name FROM sqlite_master WHERE type='table'"
-        tables = conn.execute(table_query).fetchall()
-        for table in tables:
-            print(table[0])
+        # Prompt user to select SQL command for creating the table
+        operation_options = ["INSERT TO",
+                             "INSERT INTO", "INSERT IN", "INSERT"]
+        print("Please select an option for inserting data the table:")
+        selected_command = prompt_options(operation_options)
+
+        # Verify that the selected command is correct
+        if selected_command != "INSERT INTO":
+            print(
+                f"Invalid selection. '{selected_command}' is not a valid command for creating a table.")
+            return
 
         # Insert data into table
+        existing_data = False
         for record in scenario['data']:
             keys = ', '.join(record.keys())
             values = ', '.join(['?' for _ in range(len(record))])
@@ -86,8 +89,12 @@ def run_scenario(scenario):
             except sqlite3.IntegrityError:
                 print(
                     f"Record '{record}' not inserted. Unique constraint failed.")
+                existing_data = True
                 continue
+        if existing_data:
+            print("Your answer was right but the table already had data")
 
+    # List tables
     elif operation == "3":
         # List all tables in database
         cursor = conn.cursor()
@@ -97,6 +104,7 @@ def run_scenario(scenario):
         for table in tables:
             print(table[0])
 
+    # Remove table
     elif operation == "4":
         # Check if table exists
         query = f"SELECT name FROM sqlite_master WHERE type='table' AND name='{scenario['table']}'"
@@ -106,13 +114,27 @@ def run_scenario(scenario):
                 f"Table '{scenario['table']}' does not exist in database '{scenario['database']}'")
             return
 
+        # Prompt user to select SQL command for creating the table
+        operation_options = ["EMPTY",
+                             "REMOVE", "DROP", "DOWN", "CLEAN"]
+        print("Please select an option for remove/delete the table:")
+        selected_command = prompt_options(operation_options)
+
+        # Verify that the selected command is correct
+        if selected_command != "DROP":
+            print(
+                f"Invalid selection. '{selected_command}' is not a valid command for creating a table.")
+            return
+
         # Remove table
         remove_query = f"DROP TABLE {scenario['table']}"
         conn.execute(remove_query)
         print(
             f"Table '{scenario['table']}' removed from database '{scenario['database']}'")
 
+    # Clear all data in table
     elif operation == "5":
+
         # Check if table exists
         query = f"SELECT name FROM sqlite_master WHERE type='table' AND name='{scenario['table']}'"
         result = conn.execute(query).fetchone()
@@ -121,11 +143,23 @@ def run_scenario(scenario):
                 f"Table '{scenario['table']}' does not exist in database '{scenario['database']}'")
             return
 
+        # Prompt user to select SQL command for creating the table
+        operation_options = ["DELETE", "DROP", "FULL DROP", "REMOVE"]
+        print("Please select an option for clear the table:")
+        selected_command = prompt_options(operation_options)
+
+        # Verify that the selected command is correct
+        if selected_command != "DELETE":
+            print(
+                f"Invalid selection. '{selected_command}' is not a valid command for creating a table.")
+            return
+
         # Clear data from table
         conn.execute(f"DELETE FROM {scenario['table']}")
         print(
             f"Data cleared from table '{scenario['table']}' in database '{scenario['database']}'")
 
+    # SHOW DATA
     elif operation == "6":
         # Check if table exists
         query = f"SELECT name FROM sqlite_master WHERE type='table' AND name='{scenario['table']}'"
@@ -152,9 +186,106 @@ def run_scenario(scenario):
                     print(f"{value}\t", end="")
                 print()
 
+    # Update record in table
+    elif operation == "7":
+        # Check if table exists
+        query = f"SELECT name FROM sqlite_master WHERE type='table' AND name='{scenario['table']}'"
+        result = conn.execute(query).fetchone()
+        if not result:
+            print(
+                f"Table '{scenario['table']}' does not exist in database '{scenario['database']}'")
+            return
+
+        # Prompt user to enter ID of record to update
+        record_id = input("Enter the ID of the record to update: ")
+
+        # Check if record with given ID exists
+        query = f"SELECT * FROM {scenario['table']} WHERE id=?"
+        result = conn.execute(query, (record_id,)).fetchone()
+        if not result:
+            print(
+                f"Record with ID '{record_id}' not found in table '{scenario['table']}'")
+            return
+
+        # Prompt user to enter new value for record
+        column = input("Enter the column to update: ")
+        # Check if column name exists
+        query = f"PRAGMA table_info({scenario['table']})"
+        columns = [row[1] for row in conn.execute(query)]
+        if column not in columns:
+            print(
+                f"Column '{column}' does not exist in table '{scenario['table']}'")
+            return
+        value = input("Enter the new value: ")
+
+        # Update record
+        update_query = f"UPDATE {scenario['table']} SET {column}=? WHERE id=?"
+        conn.execute(update_query, (value, record_id))
+        print(
+            f"Record with ID '{record_id}' updated in table '{scenario['table']}'")
+    # Add column to table
+    elif operation == "8":
+        # Check if table exists
+        query = f"SELECT name FROM sqlite_master WHERE type='table' AND name='{scenario['table']}'"
+        result = conn.execute(query).fetchone()
+        if not result:
+            print(
+                f"Table '{scenario['table']}' does not exist in database '{scenario['database']}'")
+            return
+
+        # Prompt user to enter column name and datatype
+        column_name = input("Enter column name: ")
+        column_datatype = input("Enter column datatype: ")
+
+        # Add column to table
+        add_column_query = f"ALTER TABLE {scenario['table']} ADD COLUMN {column_name} {column_datatype}"
+        conn.execute(add_column_query)
+        print(f"Column '{column_name}' added to table '{scenario['table']}'")
+
+    # Remove column from table
+    elif operation == "9":
+        # Check if table exists
+        query = f"SELECT name FROM sqlite_master WHERE type='table' AND name='{scenario['table']}'"
+        result = conn.execute(query).fetchone()
+        if not result:
+            print(
+                f"Table '{scenario['table']}' does not exist in database '{scenario['database']}'")
+            return
+
+        # Prompt user to select column to remove
+        column_to_remove = input("Enter the name of the column to remove: ")
+
+        # Check if column exists in table
+        query = f"SELECT {column_to_remove} FROM {scenario['table']}"
+        try:
+            conn.execute(query)
+        except sqlite3.OperationalError:
+            print(
+                f"Column '{column_to_remove}' does not exist in table '{scenario['table']}'")
+            return
+
+        # Remove column from table
+        alter_query = f"ALTER TABLE {scenario['table']} DROP COLUMN {column_to_remove}"
+        conn.execute(alter_query)
+        print(
+            f"Column '{column_to_remove}' removed from table '{scenario['table']}'")
+
     else:
         print("Invalid operation.")
 
     # Commit changes and close database connection
     conn.commit()
     conn.close()
+
+
+def prompt_options(operation_options):
+    for i, option in enumerate(operation_options):
+        print(f"{i+1}: {option}")
+    command_index = int(
+        input("Enter the index number of your selection: "))-1
+    if command_index not in range(len(operation_options)):
+        print(
+            f"Invalid selection. Please enter an index number between 1 and {len(operation_options)}.")
+        return
+    selected_command = operation_options[command_index]
+    return selected_command

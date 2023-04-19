@@ -24,7 +24,7 @@ def display_topics(topics):
 def display_scenarios(scenarios):
     print("\nAvailable Scenarios:")
     for i, scenario in enumerate(scenarios):
-        print(f"{i}: {scenario['name']}\n{scenario['description']}\n")
+        print(f"{i+1}: {scenario['name']}\n{scenario['description']}\n")
 
 
 def main():
@@ -63,13 +63,13 @@ def main():
             if user_input.lower() == 'b':
                 break
             try:
-                scenario_index = int(user_input)
+                scenario_index = int(user_input)-1
                 if scenario_index < 0 or scenario_index >= len(scenarios_for_topic):
                     raise ValueError
                 break
             except ValueError:
-                print("Invalid input. Please enter a number between 0 and",
-                      len(scenarios_for_topic)-1)
+                print("Invalid input. Please enter a number between 1 and",
+                      len(scenarios_for_topic))
 
         # Run the selected scenario
         if user_input.lower() != 'b':
