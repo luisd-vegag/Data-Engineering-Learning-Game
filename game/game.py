@@ -3,7 +3,6 @@ from game.player import Player
 
 '''
     #FIXME: 
-        - Scenario 3, there is a print that show the creation file progess. It should be removed.
         - Scenario 4. when removing a column there is a bug that fail the execution. Syntax error.
 '''
 

@@ -52,7 +52,6 @@ def generate_users_data(path: str = '', num_rows: int = 100) -> str:
                 fake.city(),
             ]
             writer.writerow(row)
-            print(i)
 
     print(f"File {filename} created successfully.")
     return filename
@@ -96,7 +95,6 @@ def generate_sales_data(path: str = '', num_rows: int = 100) -> None:
                 date,
             ]
             writer.writerow(row)
-            print(i)
 
     print(f"File {filename} created successfully.")
     return filename
@@ -141,7 +139,6 @@ def generate_product_date(path: str = '', num_rows: int = 100) -> None:
                 price,
             ]
             writer.writerow(row)
-            print(i)
 
     print(f"File {filename} created successfully.")
     return filename
@@ -185,7 +182,6 @@ def generate_customer_data(path: str = '', num_rows: int = 100) -> None:
                 address,
             ]
             writer.writerow(row)
-            print(i)
 
     print(f"File {filename} created successfully.")
     return filename
