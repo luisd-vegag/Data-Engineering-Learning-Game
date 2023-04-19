@@ -2,6 +2,7 @@ from .scenario_001 import module as scenario_001_module
 from .scenario_002 import module as scenario_002_module
 from .scenario_003 import module as scenario_003_module
 from .scenario_004 import module as scenario_004_module
+from .scenario_005 import module as scenario_005_module
 
 '''
 # TODO:
@@ -63,7 +64,8 @@ scenarios = [
     },
     {
         "id": "005",
-        "name": "Single Table Query Practice",
+        "topic": "SQL",
+        "name": "Single Table Query",
         "description": "Practice common SQL single table query operations.",
         "data": {
             "table": "sales",

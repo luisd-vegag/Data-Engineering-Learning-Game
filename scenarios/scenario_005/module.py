@@ -1,6 +1,11 @@
 import os
 import sqlite3
 
+'''
+    #FIXME: 
+        For some reason the insert data function does not recognize the column 'id' to insert the data
+'''
+
 
 def create_table(conn, table, schema):
     # Create table if it does not exist
@@ -9,12 +14,15 @@ def create_table(conn, table, schema):
 
 
 def insert_data(conn, table, data):
+
     # Insert data into table
     for row in data:
         columns = ", ".join(row.keys())
         placeholders = ", ".join("?" for _ in row.values())
         values = tuple(row.values())
         query = f"INSERT INTO {table} ({columns}) VALUES ({placeholders})"
+        print(query)
+        print(values)
         conn.execute(query, values)
 
 
@@ -67,6 +75,11 @@ def remove_column(conn, table, column):
 
 
 def run_scenario(scenario):
+    # Create database directory if it doesn't exist
+    db_directory = os.path.dirname(scenario['data']['database'])
+    if not os.path.exists(db_directory):
+        os.makedirs(db_directory)
+
     # Create database connection
     conn = sqlite3.connect(scenario['data']['database'])
 
