@@ -266,6 +266,7 @@ def run_scenario(scenario):
 
         # Remove column from table
         alter_query = f"ALTER TABLE {scenario['table']} DROP COLUMN {column_to_remove}"
+        print(alter_query)
         conn.execute(alter_query)
         print(
             f"Column '{column_to_remove}' removed from table '{scenario['table']}'")
