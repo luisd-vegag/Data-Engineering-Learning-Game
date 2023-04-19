@@ -42,7 +42,7 @@ scenarios = [
     {
         "id": "004",
         "topic": "SQL",
-        "name": "SQL Table manipulation",
+        "name": "SQL table manipulation",
         "description": "Demonstrate how to interact with SQLite database with the table 'students'.",
         "database": "./local/scenario_004/data.db",
         "table": "students",
@@ -65,23 +65,19 @@ scenarios = [
     {
         "id": "005",
         "topic": "SQL",
-        "name": "Single Table Query",
-        "description": "Practice common SQL single table query operations.",
+        "name": "Single table analysis",
+        "description": "Analize a single table using basic SQL.",
         "data": {
             "table": "sales",
             "database": "local/scenario_005/sales.db",
-            "schema": {
-                "column1": "id",
-                "datatype1": "INTEGER PRIMARY KEY",
-                "column2": "date",
-                "datatype2": "TEXT",
-                "column3": "item",
-                "datatype3": "TEXT",
-                "column4": "quantity",
-                "datatype4": "INTEGER",
-                "column5": "price",
-                "datatype5": "REAL"
-            },
+            "schema": [
+                {"column": "id", "datatype": "INTEGER PRIMARY KEY"},
+                {"column": "date", "datatype": "TEXT"},
+                {"column": "item", "datatype": "TEXT"},
+                {"column": "quantity", "datatype": "INTEGER"},
+                {"column": "price", "datatype": "REAL"}
+            ],
+
             "data": [
                 {"id": 1, "date": "2022-01-01", "item": "Product A",
                     "quantity": 10, "price": 15.99},
@@ -107,23 +103,23 @@ scenarios = [
         },
         "objectives": [
             {
-                "id": "01",
+                "id": "1",
                 "description": "Select all sales from January 1, 2022."
             },
             {
-                "id": "02",
+                "id": "2",
                 "description": "Select the total quantity and price of all sales of Product A."
             },
             {
-                "id": "03",
+                "id": "3",
                 "description": "Select all sales with a quantity of 10 or more."
             },
             {
-                "id": "04",
+                "id": "4",
                 "description": "Select all sales of products that have 'Product' in the name."
             },
             {
-                "id": "05",
+                "id": "5",
                 "description": "Select the total revenue (quantity x price) of all sales."
             }
         ],
