@@ -1,0 +1,5 @@
+psutil>=5.8.0
+asyncio>=3.4.3
+faker>=12.3.0
+dask[dataframe]>=2021.3.0
+pyspark>=3.2.0
