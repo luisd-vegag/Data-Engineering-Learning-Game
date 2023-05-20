@@ -3,6 +3,8 @@ from .scenario_002 import module as scenario_002_module
 from .scenario_003 import module as scenario_003_module
 from .scenario_004 import module as scenario_004_module
 from .scenario_005 import module as scenario_005_module
+from .scenario_006 import module as scenario_006_module
+from .scenario_007 import module as scenario_007_module
 
 '''
 # TODO:
@@ -124,5 +126,81 @@ scenarios = [
             }
         ],
         "module": scenario_005_module,
-    }
+    },
+    {
+        "id": "007",
+        "topic": "Introduction to OOP",
+        "name": "OOP Concepts",
+        "description": "This scenario provides an introduction to Object-Oriented Programming (OOP) concepts in Python.",
+        "questions": [
+            {
+                "question": "What is the main principle of OOP?",
+                "options": [
+                    "Encapsulation",
+                    "Inheritance",
+                    "Polymorphism",
+                    "Abstraction"
+                ],
+                "correct_option": "Encapsulation"
+            },
+            {
+                "question": "What is the purpose of inheritance in OOP?",
+                "options": [
+                    "To allow a class to acquire the properties and behaviors of another class",
+                    "To hide the implementation details of a class",
+                    "To create multiple instances of a class",
+                    "To perform different actions based on the type of object"
+                ],
+                "correct_option": "To allow a class to acquire the properties and behaviors of another class"
+            },
+            {
+                "question": "What is the process of creating an object from a class called?",
+                "options": [
+                    "Instantiation",
+                    "Inheritance",
+                    "Polymorphism",
+                    "Abstraction"
+                ],
+                "correct_option": "Instantiation"
+            },
+            {
+                "question": "What is the purpose of encapsulation in OOP?",
+                "options": [
+                    "To allow a class to acquire the properties and behaviors of another class",
+                    "To hide the implementation details of a class",
+                    "To create multiple instances of a class",
+                    "To perform different actions based on the type of object"
+                ],
+                "correct_option": "To hide the implementation details of a class"
+            },
+            {
+                "question": "What is the term used to describe the ability of an object to take many forms?",
+                "options": [
+                    "Encapsulation",
+                    "Inheritance",
+                    "Polymorphism",
+                    "Abstraction"
+                ],
+                "correct_option": "Polymorphism"
+            }
+        ],
+        "module": scenario_006_module
+    },
+
+    {
+        "id": "007",
+        "topic": "OOP Principles",
+        "name": "Class and Objects",
+        "description": "Please demonstrate your knowledge of creating a 'Class' and an 'Object'",
+        "concept": ["Class", "Object"],
+        "module": scenario_007_module
+    }, 
+    #{
+    #    "id": "007",
+    #    "topic": "OOP Principles",
+    #    "name": "Generic OOP Concepts",
+    #    "description": "Demostrate how implement the four basic OOP Concetps: encapsulation, abstraction, inheritance, and polymorphism.",
+    #    "concept": ["encapsulation", "abstraction", "inheritance", "polymorphism"],
+    #    "module": scenario_007_module
+    #},    
 ]

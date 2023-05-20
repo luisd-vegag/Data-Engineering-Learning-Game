@@ -241,9 +241,9 @@ def run_scenario(scenario):
         add_column_query = f"ALTER TABLE {scenario['table']} ADD COLUMN {column_name} {column_datatype}"
         conn.execute(add_column_query)
         print(f"Column '{column_name}' added to table '{scenario['table']}'")
-    else:
-        print("Invalid operation.")
-    """
+    # else:
+    #    print("Invalid operation.")
+
     # Remove column from table
     elif operation == "9":
         # Check if table exists
@@ -272,8 +272,6 @@ def run_scenario(scenario):
         conn.execute(alter_query)
         print(
             f"Column '{column_to_remove}' removed from table '{scenario['table']}'")
-    
-    """
 
     # Commit changes and close database connection
     conn.commit()
