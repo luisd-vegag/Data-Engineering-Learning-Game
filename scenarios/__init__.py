@@ -5,10 +5,39 @@ from .scenario_004 import module as scenario_004_module
 from .scenario_005 import module as scenario_005_module
 from .scenario_006 import module as scenario_006_module
 from .scenario_007 import module as scenario_007_module
+from .scenario_008 import module as scenario_008_module
+from .scenario_009 import module as scenario_009_module
+from .scenario_010 import module as scenario_010_module
+from .scenario_011 import module as scenario_011_module
+from .scenario_012 import module as scenario_012_module
+from .scenario_013 import module as scenario_013_module
+from .scenario_014 import module as scenario_014_module
+
 
 '''
 # TODO:
-    - Add synchronous processing method to compare overhead
+    - Topic Parallel Computing: 
+        Add synchronous processing method to compare overhead
+    - Topic Introduction to Data Modeling:    
+        Scenario: One-to-Many Relationship
+        Description: Task the user to model a one-to-many relationship between two entities.
+        Concepts: Relationship, primary key, foreign key, cardinality.
+
+        Scenario: Many-to-Many Relationship
+        Description: Task the user to model a many-to-many relationship between two entities.
+        Concepts: Relationship, primary key, foreign key, junction table, cardinality.
+
+        Scenario: Normalization
+        Description: Task the user to normalize a denormalized dataset into multiple tables.
+        Concepts: Normalization, functional dependency, normalization forms (1NF, 2NF, 3NF).
+
+        Scenario: Denormalization
+        Description: Task the user to denormalize a set of tables into a single denormalized table.
+        Concepts: Denormalization, redundancy, performance optimization.
+
+        Scenario: Entity-Relationship Diagram (ERD) Design
+        Description: Task the user to create an ERD for a given set of entities and their relationships.
+        Concepts: Entities, relationships, attributes, cardinality, ERD notation.        
 '''
 
 scenarios = [
@@ -128,7 +157,7 @@ scenarios = [
         "module": scenario_005_module,
     },
     {
-        "id": "007",
+        "id": "006",
         "topic": "Introduction to OOP",
         "name": "OOP Concepts",
         "description": "This scenario provides an introduction to Object-Oriented Programming (OOP) concepts in Python.",
@@ -186,21 +215,113 @@ scenarios = [
         ],
         "module": scenario_006_module
     },
-
     {
         "id": "007",
-        "topic": "OOP Principles",
+        "topic": "Introduction to OOP",
         "name": "Class and Objects",
-        "description": "Please demonstrate your knowledge of creating a 'Class' and an 'Object'",
+        "description": "This scenario provides a task where you need to demostrate how to write a Class and an Object.",
         "concept": ["Class", "Object"],
         "module": scenario_007_module
     }, 
-    #{
-    #    "id": "007",
-    #    "topic": "OOP Principles",
-    #    "name": "Generic OOP Concepts",
-    #    "description": "Demostrate how implement the four basic OOP Concetps: encapsulation, abstraction, inheritance, and polymorphism.",
-    #    "concept": ["encapsulation", "abstraction", "inheritance", "polymorphism"],
-    #    "module": scenario_007_module
-    #},    
+    {
+        "id": "008",
+        "topic": "Introduction to OOP",
+        "name": "Encapsulation",
+        "description": "This scenario provides a task where you need to demostrate how to use 'Encapsulation' principal.",
+        "module": scenario_008_module
+    },
+    {
+        "id": "009",
+        "topic": "Introduction to OOP",
+        "name": "Inheritance",
+        "description": "This scenario provides a task where you need to demonstrate the use of 'Inheritance'.",
+        "module": scenario_009_module
+    },
+    {
+        "id": "010",
+        "topic": "Introduction to OOP",
+        "name": "Polymorphism",
+        "description": "This scenario provides a task where you need to demonstrate the use of 'Polymorphism'.",
+        "module": scenario_010_module
+    }, 
+    {
+        "id": "011",
+        "topic": "Introduction to OOP",
+        "name": "Abstraction",
+        "description": "This scenario provides a task where you need to demonstrate the use of 'Abstraction'.",
+        "module": scenario_011_module
+    }, 
+    {
+        "id": "012",
+        "topic": "Introduction to Data Modeling",
+        "name": "Data Modeling Concepts",
+        "description": "This scenario provides an introduction to Data Modeling concepts.",
+        "questions": [
+            {
+                "question": "What is Data Modeling?",
+                "options": [
+                    "The process of organizing and analyzing data",
+                    "The process of creating a conceptual representation of data",
+                    "The process of converting data into information",
+                    "The process of implementing a database system"
+                ],
+                "correct_option": "The process of creating a conceptual representation of data"
+            },
+            {
+                "question": "Which of the following areas does Data Modeling play a crucial role in?",
+                "options": [
+                    "Database Design",
+                    "Data Warehousing",
+                    "Business Analysis",
+                    "All of the above"
+                ],
+                "correct_option": "All of the above"
+            },
+            {
+                "question": "What is one of the benefits of Data Modeling?",
+                "options": [
+                    "Improved data organization",
+                    "Enhanced system performance",
+                    "Ensured data integrity",
+                    "All of the above"
+                ],
+                "correct_option": "All of the above"
+            },
+            {
+                "question": "True or False: Data Modeling helps in maintaining data consistency and following predefined rules and relationships.",
+                "options": [
+                    "True",
+                    "False"
+                ],
+                "correct_option": "True"
+            },
+            {
+                "question": "Which of the following areas does Data Modeling NOT impact?",
+                "options": [
+                    "Data organization",
+                    "Scalability",
+                    "System security",
+                    "Performance optimization"
+                ],
+                "correct_option": "System security"
+            }
+        ],
+        "module": scenario_012_module
+    },
+    {
+        "id": "013",
+        "topic": "Introduction to Data Modeling",
+        "name": "Star Schema Design",
+        "description": "In this scenario, you will design a star schema for a given dataset.",
+        "module": scenario_013_module
+    }, 
+    {
+        "id": "014",
+        "topic": "Introduction to Data Modeling",
+        "name": "Star Schema Design",
+        "description": "In this scenario, you will design a snowflake schema for a given dataset.",
+        "module": scenario_014_module
+    },         
+
 ]
+

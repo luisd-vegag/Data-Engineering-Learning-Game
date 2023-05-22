@@ -9,13 +9,44 @@ class MyClass:
     def greet(self):
         print(f"Hello, {self.name}!")
 
-
-
 def run_scenario(scenario):
     print("Welcome to the Introduction to OOP scenario!")
-    print("Please demonstrate your knowledge of creating a 'Class' and an 'Object'.")
+    print("This scenario provides a task where you need to demonstrate how to use the 'Encapsulation' principle.")
     print("")
-    print("Write code to create a class named 'MyClass'.")
+    print("Encapsulation is a fundamental concept in object-oriented programming that involves the bundling of data and methods within a class.")
+    print("By encapsulating data, we ensure that it is accessible and modifiable only through the defined methods of the class, providing data protection and abstraction.")
+    print("In this scenario, you will encapsulate the 'name' parameter from the class 'MyClass'.")
+
+    # Example 1
+    print("\nExample 1:")
+    print("class MyClass:")
+    print("    def __init__(self, name):")
+    print("        self.name = name")
+    print("    def greet(self):")
+    print("        print(f\"Hello, {self.name}!\")")
+    print("")
+    print("Explanation:")
+    print("In this example, we define a class 'MyClass' with an instance variable 'name' and a method 'greet'.")
+    print("The 'name' instance variable is encapsulated within the class, ensuring data protection and abstraction.")
+    print("The 'greet' method accesses the 'name' instance variable to print a greeting message.")
+
+    # Example 2
+    print("\nExample 2:")
+    print("class MyClass:")
+    print("    def __init__(self, name):")
+    print("        self._name = name")
+    print("    def get_name(self):")
+    print("        return self._name")
+    print("    def set_name(self, name):")
+    print("        self._name = name")
+    print("    def greet(self):")
+    print("        print(f\"Hello, {self._name}!\")")
+    print("")
+    print("Explanation:")
+    print("In this example, we introduce getter and setter methods to encapsulate the 'name' instance variable.")
+    print("The 'get_name' method provides access to the 'name' variable, and the 'set_name' method allows modification of the 'name' variable.")
+    print("By encapsulating the 'name' variable and providing controlled access methods, we maintain control over the data and ensure its integrity.")
+
     # Prompt user to start coding
     input("Press Enter to start coding...")
 
@@ -86,3 +117,9 @@ def run_scenario(scenario):
         print("Congratulations! You answered correctly.")
     else:
         print("Oops! That's incorrect. The correct answer is 'b) To define the behavior and attributes of an object.'")
+
+    # Explanation of encapsulation
+    print("\nEncapsulation is demonstrated in this scenario through the creation of the MyClass class.")
+    print("The class encapsulates a person's name by assigning it to the instance variable 'self.name'.")
+    print("By encapsulating the name within the class and providing a method to access it, we ensure data protection and abstraction.")
+    print("This is a key principle of encapsulation in object-oriented programming.")
